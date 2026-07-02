@@ -4,6 +4,7 @@ import Task from "./pages/Task";
 import Layout from "./components/Layout";
 import About from "./pages/About";
 import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/tasks" element={<Task />} />
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
       </Route>
     </Routes>
   );
