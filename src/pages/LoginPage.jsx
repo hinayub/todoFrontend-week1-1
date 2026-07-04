@@ -1,26 +1,50 @@
-import { useState } from "react";
-import todoLogo from "../assets/todo-logo.png";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../redux/actions/authActions";
+import { useState } from 'react';
+import todoLogo from '../assets/todo-logo.png';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../redux/actions/authActions';
+import { authSchema } from '../validations/authSchema';
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+  });
+
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.auth);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await dispatch(loginUser({ email, password }));
+    try {
+      await authSchema.validate(form, { abortEarly: false });
+      setErrors({});
+      const result = await dispatch(loginUser({ email: form.email, password: form.password }));
 
-    if (result.success) {
-      const user = result.data.user || {};
-      localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("userName", user.username || "");
-      window.dispatchEvent(new Event("authChanged"));
-      navigate("/tasks");
+      if (result.success) {
+        const user = result.data.user || {};
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userName', user.username || '');
+        window.dispatchEvent(new Event('authChanged'));
+        navigate('/tasks');
+      }
+    } catch (err) {
+      const validationErrors = {};
+      if (err.inner) {
+        err.inner.forEach((error) => {
+          validationErrors[error.path] = error.message;
+        });
+        setErrors(validationErrors);
+      }
     }
+  };
+
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
   };
 
   return (
@@ -45,7 +69,7 @@ const LoginPage = () => {
           )}
           <div>
             <label
-              for="email"
+              htmlFor="email"
               className="block text-sm/6 font-medium text-gray-100"
             >
               Email address
@@ -55,20 +79,21 @@ const LoginPage = () => {
                 id="email"
                 type="email"
                 name="email"
-                value={email}
-                pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                autocomplete="email"
+                value={form.email}
+                onChange={handleChange}
+                autoComplete="email"
                 className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
               />
             </div>
+            {errors.email && (
+              <p className="mt-2 text-sm text-red-400">{errors.email}</p>
+            )}
           </div>
 
           <div>
             <div className="flex items-center justify-between">
               <label
-                for="password"
+                htmlFor="password"
                 className="block text-sm/6 font-medium text-gray-100"
               >
                 Password
@@ -79,14 +104,15 @@ const LoginPage = () => {
                 id="password"
                 type="password"
                 name="password"
-                pattern=".{8,}"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                autocomplete="current-password"
+                value={form.password}
+                onChange={handleChange}
+                autoComplete="current-password"
                 className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
               />
             </div>
+            {errors.password && (
+              <p className="mt-2 text-sm text-red-400">{errors.password}</p>
+            )}
           </div>
 
           <div>
@@ -95,7 +121,7 @@ const LoginPage = () => {
               disabled={loading}
               className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:opacity-60"
             >
-              {loading ? "Signing in..." : "Sign in"}
+              {loading ? 'Signing in...' : 'Sign in'}
             </button>
           </div>
         </form>
