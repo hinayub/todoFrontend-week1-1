@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import {
   TASK_LIST_REQUEST,
   TASK_LIST_SUCCESS,
@@ -13,25 +13,6 @@ import {
   TASK_DELETE_SUCCESS,
   TASK_DELETE_FAIL,
 } from "../constants/taskConstants";
-
-const BASE_URL = "http://localhost:8000/api/tasks";
-
-// Read the csrftoken cookie that Django sets (must match the header value exactly).
-const getCookieValue = (name) => {
-  const match = document.cookie.match(new RegExp("(^|;\\s*)" + name + "=([^;]+)"));
-  return match ? decodeURIComponent(match[2]) : null;
-};
-
-// Hit the endpoint once so Django sets the csrftoken cookie, then attach the header.
-const withCSRF = async (config = {}) => {
-  if (!getCookieValue("csrftoken")) {
-    await axios.get("http://localhost:8000/api/auth/csrf/", { withCredentials: true });
-  }
-  return {
-    ...config,
-    headers: { ...config.headers, "X-CSRFToken": getCookieValue("csrftoken") },
-  };
-};
 
 // Pull a readable message out of a DRF/axios error.
 const getErrorMessage = (error) => {
@@ -49,9 +30,7 @@ const getErrorMessage = (error) => {
 export const fetchTasks = () => async (dispatch) => {
   dispatch({ type: TASK_LIST_REQUEST });
   try {
-    const { data } = await axios.get(`${BASE_URL}/tasks/`, {
-      withCredentials: true,
-    });
+    const { data } = await axiosClient.get("/tasks/tasks/");
     dispatch({ type: TASK_LIST_SUCCESS, payload: data });
   } catch (error) {
     dispatch({ type: TASK_LIST_FAIL, payload: getErrorMessage(error) });
@@ -62,11 +41,7 @@ export const fetchTasks = () => async (dispatch) => {
 export const createTask = (task) => async (dispatch) => {
   dispatch({ type: TASK_CREATE_REQUEST });
   try {
-    const { data } = await axios.post(
-      `${BASE_URL}/tasks/`,
-      task,
-      await withCSRF({ withCredentials: true })
-    );
+    const { data } = await axiosClient.post("/tasks/tasks/", task);
     dispatch({ type: TASK_CREATE_SUCCESS, payload: data });
     return { success: true, data };
   } catch (error) {
@@ -79,11 +54,7 @@ export const createTask = (task) => async (dispatch) => {
 export const updateTask = (id, task) => async (dispatch) => {
   dispatch({ type: TASK_UPDATE_REQUEST });
   try {
-    const { data } = await axios.patch(
-      `${BASE_URL}/tasks/${id}/`,
-      task,
-      await withCSRF({ withCredentials: true })
-    );
+    const { data } = await axiosClient.patch(`/tasks/tasks/${id}/`, task);
     dispatch({ type: TASK_UPDATE_SUCCESS, payload: data });
     return { success: true, data };
   } catch (error) {
@@ -96,10 +67,7 @@ export const updateTask = (id, task) => async (dispatch) => {
 export const deleteTask = (id) => async (dispatch) => {
   dispatch({ type: TASK_DELETE_REQUEST });
   try {
-    await axios.delete(
-      `${BASE_URL}/tasks/${id}/delete/`,
-      await withCSRF({ withCredentials: true })
-    );
+    await axiosClient.delete(`/tasks/tasks/${id}/delete/`);
     dispatch({ type: TASK_DELETE_SUCCESS, payload: id });
     return { success: true };
   } catch (error) {
