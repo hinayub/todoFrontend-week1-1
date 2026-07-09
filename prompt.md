@@ -130,3 +130,113 @@ npm run dev
 ```
 
 Open `http://localhost:5173` — **Get Started** navigates to `/tasks`.
+<<<<<<< HEAD
+
+<!-- ============================================================= -->
+<!-- Last three days (2026-07-07 to 2026-07-09) — frontend work     -->
+<!-- ============================================================= -->
+
+## Task 6: Add Shared Navbar, Footer & Layout
+
+**Prompt:** "add a navbar and footer as shared components and wrap all the pages in a common layout, also add an About page"
+
+**Context:**
+- Files involved:
+  - `src/components/Navbar.jsx`
+  - `src/components/Footer.jsx`
+  - `src/components/Layout.jsx`
+  - `src/pages/About.jsx`
+  - `src/App.jsx`
+
+**Deliverables:**
+- Created `Navbar` with logo and links to Home, Task, About, plus auth-aware links (Login/Signup when logged out; user avatar initial + username and a Logout button when logged in).
+- Created `Footer` and a `Layout` component that renders the Navbar/Footer around an `<Outlet />`.
+- Restructured `App.jsx` so all routes render inside the shared `Layout` route, and added the `/about`, `/login`, and `/signup` routes.
+
+---
+
+## Task 7: Set Up Redux for State Management
+
+**Prompt:** "set up redux with redux-thunk to manage auth and task state, use the constants / actions / reducers pattern"
+
+**Context:**
+- Files involved:
+  - `src/redux/store.js`
+  - `src/redux/reducers/index.js`
+  - `src/redux/constants/authConstants.js`
+  - `src/redux/constants/taskConstants.js`
+  - `src/redux/actions/authActions.js`
+  - `src/redux/actions/taskActions.js`
+  - `src/redux/reducers/authReducer.js`
+  - `src/redux/reducers/taskReducer.js`
+  - `src/main.jsx`
+
+**Deliverables:**
+- Created the store with `createStore` + `applyMiddleware(thunk)` and combined `authReducer` + `taskReducer` in `rootReducer`.
+- Wrapped the app in `<Provider store={store}>` in `main.jsx`.
+- Defined request/success/fail action constants for auth (login, signup, logout) and tasks (list, create, update, delete).
+- `authReducer` tracks `loading`, `isAuthenticated`, `user`, and `error`.
+
+---
+
+## Task 8: Connect Task Page to the Backend API (CRUD)
+
+**Prompt:** "wire the tasks page to the backend so I can list, create, edit, complete and delete tasks through redux"
+
+**Context:**
+- Files involved:
+  - `src/redux/actions/taskActions.js`
+  - `src/redux/reducers/taskReducer.js`
+  - `src/pages/Task.jsx`
+
+**Deliverables:**
+- Added thunk actions hitting the DRF tasks API (`GET/POST /api/tasks/tasks/`, `PATCH /api/tasks/tasks/<id>/`, `DELETE /api/tasks/tasks/<id>/delete/`) with `withCredentials` and CSRF handling.
+- Added a `withCSRF` helper that fetches the `csrftoken` cookie once and attaches the `X-CSRFToken` header, plus a `getErrorMessage` helper to surface DRF field errors.
+- Rebuilt `Task.jsx` with a description/date/time form supporting create **and** edit (via `editingId`), toggle-complete, and delete — all dispatched through Redux with loading/error state.
+
+---
+
+## Task 9: Add Login & Signup Pages with Validation
+
+**Prompt:** "create login and signup pages styled with tailwind, validate the inputs with yup and submit through redux to the auth API"
+
+**Context:**
+- Files involved:
+  - `src/pages/LoginPage.jsx`
+  - `src/pages/SignupPage.jsx`
+  - `src/validations/authSchema.js`
+  - `src/redux/actions/authActions.js`
+
+**Deliverables:**
+- Added `authSchema` and `signupSchema` (yup): required email (format), password min 8, and name min 2 for signup.
+- Built `LoginPage` and `SignupPage` with Tailwind, showing per-field validation errors (`abortEarly: false`) and the Redux `error`/`loading` state.
+- On success, dispatch `loginUser` / `signupUser`, persist `isLoggedIn` / `userName` to `localStorage`, fire an `authChanged` event, and navigate to `/tasks`.
+- Added CSRF-aware auth thunks posting to `POST /api/auth/login/` and `POST /api/auth/register/`.
+
+---
+
+## Task 10: Add Frontend Testing with Vitest
+
+**Prompt:** "add vitest and react testing library and write tests for the login form validation"
+
+**Context:**
+- Files involved:
+  - `vite.config.js`
+  - `src/setupTests.js`
+  - `src/pages/LoginPage.test.jsx`
+
+**Deliverables:**
+- Configured Vitest in `vite.config.js` (`globals`, `jsdom` environment, `setupTests.js`).
+- Added `setupTests.js` importing `@testing-library/jest-dom`.
+- Wrote `LoginPage.test.jsx` (rendered inside `MemoryRouter`) covering valid/invalid email and password length (min 8) validation.
+
+---
+
+## Task 11: Update Frontend Prompt Documentation
+
+**Prompt:** "your task is to update the prompt .md file with the last three days prompt related to the frontend"
+
+**Deliverable:**
+- Appended Tasks 6–11 documenting the last three days of frontend work: shared layout, Redux setup, task CRUD wiring, auth pages with yup validation, and Vitest testing.
+=======
+>>>>>>> dd0d1b8c44691ce75da7520d3ad11dcbf3777d69
