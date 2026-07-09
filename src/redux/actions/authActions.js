@@ -1,5 +1,8 @@
-import axios from "axios";
-import axiosClient, { API_BASE_URL, refreshAccessToken } from "../../api/axiosClient";
+import axios from 'axios';
+import axiosClient, {
+  API_BASE_URL,
+  refreshAccessToken,
+} from '../../api/axiosClient';
 import {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
@@ -9,13 +12,13 @@ import {
   SIGNUP_FAIL,
   LOGOUT,
   AUTH_CHECK_DONE,
-} from "../constants/authConstants";
+} from '../constants/authConstants';
 
 // Pull a readable message out of a DRF/axios error.
 const getErrorMessage = (error) => {
   const data = error.response?.data;
-  if (!data) return error.message || "Something went wrong";
-  if (typeof data === "string") return data;
+  if (!data) return error.message || 'Something went wrong';
+  if (typeof data === 'string') return data;
   if (data.detail) return data.detail;
   if (data.message) return data.message;
   // DRF field errors -> take the first one
@@ -28,7 +31,7 @@ const getErrorMessage = (error) => {
 export const loginUser = (credentials) => async (dispatch) => {
   dispatch({ type: LOGIN_REQUEST });
   try {
-    const { data } = await axiosClient.post("/auth/login/", credentials);
+    const { data } = await axiosClient.post('/auth/login/', credentials);
     dispatch({
       type: LOGIN_SUCCESS,
       payload: { user: data.user, accessToken: data.access },
@@ -44,7 +47,7 @@ export const loginUser = (credentials) => async (dispatch) => {
 export const signupUser = (details) => async (dispatch) => {
   dispatch({ type: SIGNUP_REQUEST });
   try {
-    const { data } = await axiosClient.post("/auth/register/", details);
+    const { data } = await axiosClient.post('/auth/register/', details);
     dispatch({
       type: SIGNUP_SUCCESS,
       payload: { user: data.user, accessToken: data.access },
@@ -58,7 +61,7 @@ export const signupUser = (details) => async (dispatch) => {
 
 export const logoutUser = () => async (dispatch) => {
   try {
-    await axiosClient.post("/auth/logout/");
+    await axiosClient.post('/auth/logout/');
   } catch {
     // Ignore -- we're logging out client-side regardless.
   }

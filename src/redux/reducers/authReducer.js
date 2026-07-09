@@ -8,7 +8,7 @@ import {
   LOGOUT,
   TOKEN_REFRESHED,
   AUTH_CHECK_DONE,
-} from "../constants/authConstants";
+} from '../constants/authConstants';
 
 const initialState = {
   loading: false,

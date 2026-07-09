@@ -130,6 +130,7 @@ npm run dev
 ```
 
 Open `http://localhost:5173` — **Get Started** navigates to `/tasks`.
+<<<<<<< HEAD
 
 <!-- ============================================================= -->
 <!-- Last three days (2026-07-07 to 2026-07-09) — frontend work     -->
@@ -237,3 +238,5 @@ Open `http://localhost:5173` — **Get Started** navigates to `/tasks`.
 
 **Deliverable:**
 - Appended Tasks 6–11 documenting the last three days of frontend work: shared layout, Redux setup, task CRUD wiring, auth pages with yup validation, and Vitest testing.
+=======
+>>>>>>> dd0d1b8c44691ce75da7520d3ad11dcbf3777d69

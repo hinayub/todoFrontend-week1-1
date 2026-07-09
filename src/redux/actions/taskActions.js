@@ -1,4 +1,4 @@
-import axiosClient from "../../api/axiosClient";
+import axiosClient from '../../api/axiosClient';
 import {
   TASK_LIST_REQUEST,
   TASK_LIST_SUCCESS,
@@ -12,13 +12,13 @@ import {
   TASK_DELETE_REQUEST,
   TASK_DELETE_SUCCESS,
   TASK_DELETE_FAIL,
-} from "../constants/taskConstants";
+} from '../constants/taskConstants';
 
 // Pull a readable message out of a DRF/axios error.
 const getErrorMessage = (error) => {
   const data = error.response?.data;
-  if (!data) return error.message || "Something went wrong";
-  if (typeof data === "string") return data;
+  if (!data) return error.message || 'Something went wrong';
+  if (typeof data === 'string') return data;
   if (data.detail) return data.detail;
   if (data.message) return data.message;
   const firstKey = Object.keys(data)[0];
@@ -30,7 +30,7 @@ const getErrorMessage = (error) => {
 export const fetchTasks = () => async (dispatch) => {
   dispatch({ type: TASK_LIST_REQUEST });
   try {
-    const { data } = await axiosClient.get("/tasks/tasks/");
+    const { data } = await axiosClient.get('/tasks/tasks/');
     dispatch({ type: TASK_LIST_SUCCESS, payload: data });
   } catch (error) {
     dispatch({ type: TASK_LIST_FAIL, payload: getErrorMessage(error) });
@@ -41,7 +41,7 @@ export const fetchTasks = () => async (dispatch) => {
 export const createTask = (task) => async (dispatch) => {
   dispatch({ type: TASK_CREATE_REQUEST });
   try {
-    const { data } = await axiosClient.post("/tasks/tasks/", task);
+    const { data } = await axiosClient.post('/tasks/tasks/', task);
     dispatch({ type: TASK_CREATE_SUCCESS, payload: data });
     return { success: true, data };
   } catch (error) {
